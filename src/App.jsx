@@ -14,8 +14,22 @@ import AssessmentPage from './pages/AssessmentPage';
 import { getItem, setItem, STORAGE_KEYS } from './utils/storage';
 
 export default function App() {
-  const [activePage, setActivePage] = useState('home');
+  const [activePage, setActivePage] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const pageParam = params.get('page');
+      if (pageParam) return pageParam;
+      if (params.get('product') || params.get('ar')) return 'ar-gallery';
+    }
+    return 'home';
+  });
+
   const [selectedProductId, setSelectedProductId] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const prodParam = params.get('product');
+      if (prodParam) return prodParam;
+    }
     return getItem(STORAGE_KEYS.ACTIVE_PRODUCT, 'lighting-controller');
   });
 

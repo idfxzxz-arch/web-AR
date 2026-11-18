@@ -33,6 +33,18 @@ export default function ArGalleryPage({ activeProductId, setActiveProductId, set
     }
   }, [activeProductId]);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('ar') === 'true') {
+        setTimeout(() => {
+          const el = document.getElementById('model-viewer-container');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 400);
+      }
+    }
+  }, []);
+
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
     if (setActiveProductId) {

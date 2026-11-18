@@ -138,37 +138,35 @@ export default function ModelViewer({ product, onSelectHotspot }) {
   return (
     <div 
       id="model-viewer-container"
-      className="relative w-full h-[520px] sm:h-[580px] bg-zinc-950 rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl flex flex-col"
+      className="relative w-full h-[380px] sm:h-[460px] md:h-[520px] bg-zinc-950 rounded-xl sm:rounded-2xl overflow-hidden border border-zinc-800 shadow-xl flex flex-col"
     >
       {/* Top Engineering HUD Telemetry Bar */}
-      <div className="absolute top-3 left-3 right-3 z-20 flex flex-wrap justify-between items-center gap-2 pointer-events-none">
+      <div className="absolute top-2 left-2 right-2 sm:top-3 sm:left-3 sm:right-3 z-20 flex justify-between items-center gap-1.5 pointer-events-none">
         {/* Device Telemetry Tag */}
-        <div className="pointer-events-auto bg-zinc-900/95 border border-zinc-800 px-3 py-1.5 rounded-lg text-white font-mono text-[11px] flex items-center gap-2.5 shadow-sm">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span className="font-bold text-zinc-100">{product.code}</span>
-          </div>
-          <span className="text-zinc-600">|</span>
-          <span className="text-zinc-400 font-sans">{product.name}</span>
+        <div className="pointer-events-auto bg-zinc-900/95 border border-zinc-800 px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg text-white font-mono text-[10px] sm:text-[11px] flex items-center gap-1.5 sm:gap-2 shadow-sm shrink-0">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span className="font-bold text-zinc-100">{product.code}</span>
           <span className="text-zinc-600 hidden sm:inline">|</span>
-          <span className="text-cyan-400 font-semibold hidden sm:inline">{product.dimensions}</span>
+          <span className="text-zinc-400 font-sans hidden sm:inline truncate max-w-[160px]">{product.name}</span>
+          <span className="text-zinc-600 hidden md:inline">|</span>
+          <span className="text-cyan-400 font-semibold hidden md:inline">{product.dimensions}</span>
         </div>
 
         {/* Camera Preset Quick Viewers */}
-        <div className="pointer-events-auto flex items-center space-x-1 bg-zinc-900/95 border border-zinc-800 p-1 rounded-lg font-mono text-[11px]">
+        <div className="pointer-events-auto flex items-center space-x-0.5 sm:space-x-1 bg-zinc-900/95 border border-zinc-800 p-0.5 sm:p-1 rounded-lg font-mono text-[10px] sm:text-[11px] shrink-0">
           <button
             onClick={() => setCameraAngle('iso')}
             title="Sudut Isometrik 3D"
-            className={`px-2 py-1 rounded transition-colors ${
+            className={`px-1.5 py-0.5 sm:px-2 sm:py-1 rounded transition-colors ${
               activeViewMode === 'iso' ? 'bg-zinc-800 text-cyan-300 font-bold' : 'text-zinc-400 hover:text-white'
             }`}
           >
-            ISO 3D
+            ISO
           </button>
           <button
             onClick={() => setCameraAngle('front')}
             title="Tampak Depan"
-            className={`px-2 py-1 rounded transition-colors ${
+            className={`px-1.5 py-0.5 sm:px-2 sm:py-1 rounded transition-colors ${
               activeViewMode === 'front' ? 'bg-zinc-800 text-cyan-300 font-bold' : 'text-zinc-400 hover:text-white'
             }`}
           >
@@ -177,7 +175,7 @@ export default function ModelViewer({ product, onSelectHotspot }) {
           <button
             onClick={() => setCameraAngle('top')}
             title="Tampak Atas"
-            className={`px-2 py-1 rounded transition-colors ${
+            className={`px-1.5 py-0.5 sm:px-2 sm:py-1 rounded transition-colors ${
               activeViewMode === 'top' ? 'bg-zinc-800 text-cyan-300 font-bold' : 'text-zinc-400 hover:text-white'
             }`}
           >
@@ -186,33 +184,33 @@ export default function ModelViewer({ product, onSelectHotspot }) {
           <button
             onClick={() => setCameraAngle('side')}
             title="Tampak Samping"
-            className={`px-2 py-1 rounded transition-colors ${
+            className={`hidden sm:inline-block px-2 py-1 rounded transition-colors ${
               activeViewMode === 'side' ? 'bg-zinc-800 text-cyan-300 font-bold' : 'text-zinc-400 hover:text-white'
             }`}
           >
             SIDE
           </button>
           
-          <div className="w-px h-4 bg-zinc-800 mx-0.5"></div>
+          <div className="w-px h-3 sm:h-4 bg-zinc-800 mx-0.5"></div>
 
           {/* Turntable Auto-Rotate Toggle */}
           <button
             onClick={handleToggleAutoRotate}
             title={autoRotate ? "Jeda Putaran Turntable" : "Mulai Putaran Turntable Halus"}
-            className={`p-1.5 rounded transition-colors ${
+            className={`p-1 sm:p-1.5 rounded transition-colors ${
               autoRotate ? 'bg-blue-600 text-white' : 'text-zinc-400 hover:text-white'
             }`}
           >
-            <RotateCw className="w-3.5 h-3.5" />
+            <RotateCw className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
           </button>
 
           {/* Fullscreen Toggle */}
           <button
             onClick={handleToggleFullscreen}
             title={isFullscreen ? "Keluar Layar Penuh" : "Layar Penuh"}
-            className="p-1.5 rounded text-zinc-400 hover:text-white text-xs transition-colors"
+            className="p-1 sm:p-1.5 rounded text-zinc-400 hover:text-white transition-colors"
           >
-            {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+            {isFullscreen ? <Minimize2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> : <Maximize2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
           </button>
         </div>
       </div>
@@ -258,11 +256,11 @@ export default function ModelViewer({ product, onSelectHotspot }) {
           <button
             slot="ar-button"
             id="ar-button"
-            className="absolute bottom-14 right-3 sm:bottom-14 sm:right-3 z-30 px-3.5 py-2 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-mono text-xs font-bold rounded-lg shadow-2xl flex items-center gap-2 border border-blue-400/30 transition-all active:scale-95 cursor-pointer"
+            className="pointer-events-auto absolute bottom-3 left-3 right-14 sm:left-auto sm:right-3 z-30 px-3 py-2 sm:px-4 sm:py-2.5 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-mono text-xs font-bold rounded-lg shadow-xl flex items-center justify-center gap-1.5 sm:gap-2 border border-blue-400/30 transition-all active:scale-95 cursor-pointer"
           >
-            <Smartphone className="w-4 h-4 text-cyan-200 animate-pulse" />
-            <span>PROYEKSI MEJA (WEB AR)</span>
-            <span className="bg-blue-900/80 text-cyan-300 text-[10px] px-1.5 py-0.5 rounded border border-blue-400/20">
+            <Smartphone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-200 animate-pulse shrink-0" />
+            <span className="truncate">PROYEKSI MEJA (WEB AR)</span>
+            <span className="bg-blue-900/80 text-cyan-300 text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded border border-blue-400/20 shrink-0 font-mono">
               1:1
             </span>
           </button>
@@ -320,20 +318,21 @@ export default function ModelViewer({ product, onSelectHotspot }) {
       </div>
 
       {/* Bottom Instrumentation Bar */}
-      <div className="absolute bottom-3 left-3 right-3 z-20 flex flex-col sm:flex-row justify-between items-center gap-2 pointer-events-none">
-        {/* Navigation Prompt */}
-        <div className="pointer-events-auto bg-zinc-900/95 border border-zinc-800 px-3 py-1.5 rounded-lg text-[11px] font-mono text-zinc-400 flex items-center gap-2 shadow-sm">
-          <Crosshair className="w-3.5 h-3.5 text-cyan-400" />
+      <div className="absolute bottom-3 left-3 right-3 z-20 flex justify-between items-center pointer-events-none">
+        {/* Navigation Prompt (hidden on small mobile screens to prevent clutter) */}
+        <div className="hidden sm:flex pointer-events-auto bg-zinc-900/95 border border-zinc-800 px-3 py-1.5 rounded-lg text-[11px] font-mono text-zinc-400 items-center gap-2 shadow-sm">
+          <Crosshair className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
           <span>Tahan klik/geser untuk orbit 360° • Scroll untuk zoom</span>
         </div>
 
-        {/* QR & AR Multi-Platform Help Trigger Button */}
+        {/* QR & AR Multi-Platform Help Trigger Button (Compact icon on mobile, expanded pill on sm+) */}
         <button
           onClick={() => setShowQrModal(true)}
-          className="pointer-events-auto w-full sm:w-auto px-4 py-2 bg-zinc-900/95 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 font-mono text-xs font-bold rounded-lg shadow-md flex items-center justify-center gap-2 transition-colors cursor-pointer"
+          title="Panduan Proyeksi Meja AR & Kode QR"
+          className="pointer-events-auto ml-auto w-9 h-9 sm:w-auto sm:h-auto sm:px-3 sm:py-2 bg-zinc-900/95 hover:bg-zinc-800 active:bg-zinc-700 border border-zinc-700 text-zinc-200 font-mono text-xs font-bold rounded-lg shadow-xl flex items-center justify-center gap-2 transition-colors cursor-pointer shrink-0"
         >
-          <QrCode className="w-4 h-4 text-cyan-400" />
-          <span>PANDUAN AR (ANDROID & IPHONE)</span>
+          <QrCode className="w-4 h-4 text-cyan-400 shrink-0" />
+          <span className="hidden sm:inline">PANDUAN & QR AR</span>
         </button>
       </div>
 

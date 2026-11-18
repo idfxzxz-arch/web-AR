@@ -20,10 +20,9 @@ export default function ModelViewer({ product, onSelectHotspot }) {
   const [autoRotate, setAutoRotate] = useState(false); // Default to false for precision inspection
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
-  const [qrMode, setQrMode] = useState('universal'); // 'universal' or 'ios'
-  const [qrUniversalDataUrl, setQrUniversalDataUrl] = useState('');
-  const [qrIosDataUrl, setQrIosDataUrl] = useState('');
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState('');
   const [isMobileDevice, setIsMobileDevice] = useState(false);
+  const [mobileOS, setMobileOS] = useState('desktop'); // 'ios' | 'android' | 'desktop'
   const [loadingError, setLoadingError] = useState(false);
   const [cameraOrbitText, setCameraOrbitText] = useState('30° 60° auto');
   const [activeViewMode, setActiveViewMode] = useState('iso');
@@ -38,34 +37,30 @@ export default function ModelViewer({ product, onSelectHotspot }) {
 
   useEffect(() => {
     const ua = navigator.userAgent || navigator.vendor || window.opera;
-    const isMobile = /android|iphone|ipad|ipod|windows phone/i.test(ua.toLowerCase());
-    setIsMobileDevice(isMobile);
+    if (/iphone|ipad|ipod/i.test(ua)) {
+      setMobileOS('ios');
+      setIsMobileDevice(true);
+    } else if (/android/i.test(ua)) {
+      setMobileOS('android');
+      setIsMobileDevice(true);
+    } else {
+      setMobileOS('desktop');
+      setIsMobileDevice(false);
+    }
 
     if (typeof window !== 'undefined') {
       const origin = window.location.origin;
-      const targetUniversalUrl = `${origin}/?page=ar-gallery&product=${product.id}&ar=true`;
-      QRCode.toDataURL(targetUniversalUrl, {
-        width: 240,
+      const universalLaunchUrl = `${origin}/?page=ar-gallery&product=${product.id}&ar=true`;
+      QRCode.toDataURL(universalLaunchUrl, {
+        width: 280,
         margin: 1,
         color: {
           dark: '#090d16',
           light: '#ffffff'
         }
       })
-        .then((url) => setQrUniversalDataUrl(url))
-        .catch((err) => console.error('Error generating universal QR code:', err));
-
-      const targetIosUrl = new URL(product.usdzUrl, window.location.href).href;
-      QRCode.toDataURL(targetIosUrl, {
-        width: 240,
-        margin: 1,
-        color: {
-          dark: '#090d16',
-          light: '#ffffff'
-        }
-      })
-        .then((url) => setQrIosDataUrl(url))
-        .catch((err) => console.error('Error generating iOS QR code:', err));
+        .then((url) => setQrCodeDataUrl(url))
+        .catch((err) => console.error('Error generating 1-barcode QR code:', err));
     }
 
     const viewer = modelViewerRef.current;
@@ -363,16 +358,17 @@ export default function ModelViewer({ product, onSelectHotspot }) {
             className="bg-white rounded-2xl max-w-md w-full border border-zinc-300 shadow-2xl p-6 text-zinc-900 max-h-[92vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-start mb-2.5">
+            {/* Modal Header */}
+            <div className="flex justify-between items-start mb-3">
               <div>
                 <span className="text-[10px] font-mono font-bold text-blue-700 uppercase tracking-wider block">
-                  WebXR Multi-Platform Protocol
+                  WebXR Universal Auto-Detect
                 </span>
                 <h3 className="text-base font-bold text-zinc-950 mt-0.5">
-                  Proyeksi Meja Fisik Kelas: {product.code}
+                  Proyeksi Meja AR: {product.code}
                 </h3>
                 <p className="text-[11px] text-zinc-500 font-sans mt-0.5">
-                  Mendukung smartphone <strong>Android</strong> dan <strong>iPhone</strong> tanpa instalasi file APK.
+                  1 Barcode pintar untuk <strong>Android</strong> dan <strong>iPhone</strong> (Skala 1:1).
                 </p>
               </div>
               <button
@@ -383,142 +379,91 @@ export default function ModelViewer({ product, onSelectHotspot }) {
               </button>
             </div>
 
-            {/* If opening on mobile: Highlight that scanning QR is not needed */}
+            {/* If opening on mobile: Automatically show the SINGLE right button for their device */}
             {isMobileDevice && (
-              <div className="p-3 mb-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-950 font-sans space-y-1">
-                <div className="font-bold font-mono flex items-center gap-1.5 text-blue-800">
-                  <Smartphone className="w-4 h-4 text-blue-600" />
-                  <span>Anda Sedang Membuka di Smartphone!</span>
+              <div className="space-y-2 mb-3">
+                <div className="p-3 bg-zinc-50 border border-zinc-200 rounded-xl space-y-2">
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <span className="text-zinc-500 font-bold uppercase text-[10px]">Perangkat Anda:</span>
+                    <span className={`px-2 py-0.5 rounded font-bold text-[10px] ${
+                      mobileOS === 'ios' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'
+                    }`}>
+                      {mobileOS === 'ios' ? '🍏 Apple iOS (Quick Look)' : '🤖 Android (Scene Viewer)'}
+                    </span>
+                  </div>
+
+                  {mobileOS === 'ios' ? (
+                    <a
+                      rel="ar"
+                      href={product.usdzUrl}
+                      className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-mono rounded-xl shadow-lg flex items-center justify-center gap-2 font-bold text-xs transition-all active:scale-95"
+                    >
+                      <Smartphone className="w-4 h-4 text-cyan-200 animate-pulse" />
+                      <span>BUKA KAMERA AR (APPLE QUICK LOOK)</span>
+                    </a>
+                  ) : (
+                    <a
+                      href={getAndroidSceneViewerIntent()}
+                      className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-mono rounded-xl shadow-lg flex items-center justify-center gap-2 font-bold text-xs transition-all active:scale-95"
+                    >
+                      <Smartphone className="w-4 h-4 text-emerald-200 animate-pulse" />
+                      <span>BUKA KAMERA AR (GOOGLE SCENE VIEWER)</span>
+                    </a>
+                  )}
+
+                  <p className="text-[10px] text-zinc-500 text-center font-sans">
+                    Sistem otomatis memilih protokol terbaik tanpa perlu pilih manual.
+                  </p>
                 </div>
-                <p className="text-[11px] text-blue-900 leading-relaxed">
-                  Tidak perlu memindai kode QR. Cukup sentuh salah satu tombol aktivasi instan di bawah, atau tutup jendela ini dan sentuh tombol biru <strong>"PROYEKSI MEJA (WEB AR)"</strong>.
-                </p>
               </div>
             )}
 
-            {/* Direct Mobile Launchers for Both Platforms */}
-            <div className="space-y-1.5 mb-3">
-              <div className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wide">
-                Aktivasi Langsung di Smartphone Anda:
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {/* Android Trigger Card */}
-                <a
-                  href={getAndroidSceneViewerIntent()}
-                  className="p-3 bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 rounded-xl flex flex-col justify-between transition-all group"
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] font-mono font-bold text-emerald-800 uppercase flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                      Android (Chrome)
-                    </span>
-                    <span className="text-[10px] font-mono text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded border border-emerald-300">
-                      .GLB
-                    </span>
-                  </div>
-                  <span className="text-xs font-bold text-emerald-950 group-hover:text-emerald-800">
-                    Buka Google Scene Viewer
-                  </span>
-                  <span className="text-[10px] text-emerald-700 mt-1">
-                    Samsung, Xiaomi, Oppo, Vivo, Pixel, dll.
-                  </span>
-                </a>
+            {/* Universal QR Code (1 Barcode for both Android and iPhone) */}
+            <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-4 flex flex-col items-center justify-center mb-3">
+              <span className="text-[10px] font-mono font-bold text-zinc-700 mb-2 uppercase text-center flex items-center gap-1.5">
+                <QrCode className="w-3.5 h-3.5 text-blue-600" />
+                <span>1 Barcode Universal (Android & iPhone)</span>
+              </span>
 
-                {/* iPhone / iOS Trigger Card */}
-                <a
-                  rel="ar"
-                  href={product.usdzUrl}
-                  className="p-3 bg-blue-50 hover:bg-blue-100/80 border border-blue-200 rounded-xl flex flex-col justify-between transition-all group"
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] font-mono font-bold text-blue-800 uppercase flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                      Apple iOS (Safari)
-                    </span>
-                    <span className="text-[10px] font-mono text-blue-700 bg-blue-100 px-1.5 py-0.2 rounded border border-blue-300">
-                      .USDZ
-                    </span>
-                  </div>
-                  <span className="text-xs font-bold text-blue-950 group-hover:text-blue-800">
-                    Buka Apple Quick Look
-                  </span>
-                  <span className="text-[10px] text-blue-700 mt-1">
-                    iPhone 8 s.d. 16 Pro, iPad (ARKit)
-                  </span>
-                </a>
-              </div>
-            </div>
-
-            {/* QR Container for Desktop / Laptop Screens */}
-            <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-3 flex flex-col items-center justify-center mb-3">
-              <div className="text-[10px] font-mono font-bold text-zinc-600 mb-2 uppercase text-center">
-                Pindai dengan Kamera Smartphone:
-              </div>
-
-              {/* Mode Toggle */}
-              <div className="flex rounded-lg bg-zinc-200/80 p-0.5 mb-2.5 w-full max-w-xs font-mono text-[10px]">
-                <button
-                  onClick={() => setQrMode('universal')}
-                  className={`flex-1 py-1 rounded font-bold transition-all ${
-                    qrMode === 'universal'
-                      ? 'bg-white text-zinc-900 shadow-sm'
-                      : 'text-zinc-600 hover:text-zinc-900'
-                  }`}
-                >
-                  📱 Semua Smartphone
-                </button>
-                <button
-                  onClick={() => setQrMode('ios')}
-                  className={`flex-1 py-1 rounded font-bold transition-all ${
-                    qrMode === 'ios'
-                      ? 'bg-white text-blue-700 shadow-sm'
-                      : 'text-zinc-600 hover:text-zinc-900'
-                  }`}
-                >
-                  🍏 Khusus iPhone (USDZ)
-                </button>
-              </div>
-
-              {/* QR Image */}
-              {qrMode === 'universal' ? (
-                qrUniversalDataUrl ? (
-                  <img 
-                    src={qrUniversalDataUrl} 
-                    alt="QR Code Web AR Universal" 
-                    className="w-40 h-40 rounded bg-white p-2 border border-zinc-200 shadow-sm"
-                  />
-                ) : (
-                  <div className="w-40 h-40 flex items-center justify-center text-xs text-zinc-400">
-                    Memuat QR...
-                  </div>
-                )
+              {qrCodeDataUrl ? (
+                <img 
+                  src={qrCodeDataUrl} 
+                  alt={`QR Code Web AR ${product.code}`} 
+                  className="w-48 h-48 rounded-lg bg-white p-2 border border-zinc-300 shadow-sm"
+                />
               ) : (
-                qrIosDataUrl ? (
-                  <img 
-                    src={qrIosDataUrl} 
-                    alt="QR Code iOS USDZ Quick Look" 
-                    className="w-40 h-40 rounded bg-white p-2 border border-blue-200 shadow-sm ring-2 ring-blue-500/20"
-                  />
-                ) : (
-                  <div className="w-40 h-40 flex items-center justify-center text-xs text-zinc-400">
-                    Memuat QR...
-                  </div>
-                )
+                <div className="w-48 h-48 flex items-center justify-center text-xs text-zinc-400">
+                  Membuat Barcode...
+                </div>
               )}
 
-              <span className="text-[10px] font-mono text-zinc-500 mt-2 text-center max-w-xs leading-relaxed">
-                {qrMode === 'universal'
-                  ? `Pindai dengan kamera ponsel untuk langsung membuka prototipe ${product.code} di Web AR.`
-                  : `Pindai dengan kamera bawaan iPhone untuk langsung membuka Apple AR Quick Look.`}
-              </span>
+              <div className="mt-2 text-center space-y-0.5">
+                <span className="text-xs font-bold font-sans text-zinc-900 block">
+                  Pindai dengan Kamera HP Anda
+                </span>
+                <span className="text-[10px] font-mono text-zinc-500 block">
+                  Buka kamera iPhone atau Android $\rightarrow$ Arahkan ke barcode ini
+                </span>
+              </div>
             </div>
 
-            {/* Security Explanation Note */}
-            <div className="p-2.5 mb-3 bg-zinc-100 rounded-lg text-[10px] text-zinc-600 font-sans border border-zinc-200/80 leading-relaxed">
-              <strong className="font-mono text-zinc-800 block mb-0.5">
-                ℹ️ Mengapa kamera AR membutuhkan 1 sentuhan konfirmasi?
-              </strong>
-              Sesuai standar privasi keamanan Apple iOS (ARKit) dan Google Android (ARCore), browser dilarang menyalakan sensor kamera fisik secara otomatis tanpa sentuhan langsung pengguna (<em>User Gesture</em>) demi mencegah penyalahgunaan privasi.
+            {/* Quick 3 Step Guide */}
+            <div className="space-y-1.5 mb-3 text-[11px] text-zinc-600 font-sans bg-zinc-100/70 p-3 rounded-xl border border-zinc-200">
+              <div className="text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">
+                Langkah Cepat di Meja Kelas:
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="w-4 h-4 rounded bg-zinc-200 font-mono font-bold text-[10px] flex items-center justify-center text-zinc-800 shrink-0 mt-0.5">1</span>
+                <span>Pindai barcode di atas menggunakan kamera bawaan ponsel (bebas Android maupun iPhone).</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="w-4 h-4 rounded bg-zinc-200 font-mono font-bold text-[10px] flex items-center justify-center text-zinc-800 shrink-0 mt-0.5">2</span>
+                <span>Ketuk notifikasi tautan yang muncul untuk membuka prototipe 3D skala 1:1.</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="w-4 h-4 rounded bg-zinc-200 font-mono font-bold text-[10px] flex items-center justify-center text-zinc-800 shrink-0 mt-0.5">3</span>
+                <span>Sentuh tombol <strong>"PROYEKSI MEJA (WEB AR)"</strong> lalu arahkan kamera ke meja kelas Anda.</span>
+              </div>
             </div>
 
             <button

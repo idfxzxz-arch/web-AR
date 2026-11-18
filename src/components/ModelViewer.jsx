@@ -138,7 +138,7 @@ export default function ModelViewer({ product, onSelectHotspot }) {
   return (
     <div 
       id="model-viewer-container"
-      className="relative w-full h-[380px] sm:h-[460px] md:h-[520px] bg-zinc-950 rounded-xl sm:rounded-2xl overflow-hidden border border-zinc-800 shadow-xl flex flex-col"
+      className="relative w-full h-[340px] sm:h-[440px] md:h-[500px] bg-zinc-950 rounded-xl sm:rounded-2xl overflow-hidden border border-zinc-800 shadow-xl flex flex-col"
     >
       {/* Top Engineering HUD Telemetry Bar */}
       <div className="absolute top-2 left-2 right-2 sm:top-3 sm:left-3 sm:right-3 z-20 flex justify-between items-center gap-1.5 pointer-events-none">
@@ -256,7 +256,7 @@ export default function ModelViewer({ product, onSelectHotspot }) {
           <button
             slot="ar-button"
             id="ar-button"
-            className="pointer-events-auto absolute bottom-3 left-3 right-14 sm:left-auto sm:right-3 z-30 px-3 py-2 sm:px-4 sm:py-2.5 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-mono text-xs font-bold rounded-lg shadow-xl flex items-center justify-center gap-1.5 sm:gap-2 border border-blue-400/30 transition-all active:scale-95 cursor-pointer"
+            className="pointer-events-auto absolute bottom-3 left-3 right-14 sm:left-auto sm:right-48 z-30 h-10 px-3 sm:px-4 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-mono text-xs font-bold rounded-lg shadow-xl flex items-center justify-center gap-1.5 sm:gap-2 border border-blue-400/30 transition-all active:scale-95 cursor-pointer"
           >
             <Smartphone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-200 animate-pulse shrink-0" />
             <span className="truncate">PROYEKSI MEJA (WEB AR)</span>
@@ -329,7 +329,7 @@ export default function ModelViewer({ product, onSelectHotspot }) {
         <button
           onClick={() => setShowQrModal(true)}
           title="Panduan Proyeksi Meja AR & Kode QR"
-          className="pointer-events-auto ml-auto w-9 h-9 sm:w-auto sm:h-auto sm:px-3 sm:py-2 bg-zinc-900/95 hover:bg-zinc-800 active:bg-zinc-700 border border-zinc-700 text-zinc-200 font-mono text-xs font-bold rounded-lg shadow-xl flex items-center justify-center gap-2 transition-colors cursor-pointer shrink-0"
+          className="pointer-events-auto ml-auto w-10 h-10 sm:w-auto sm:h-10 sm:px-3 bg-zinc-900/95 hover:bg-zinc-800 active:bg-zinc-700 border border-zinc-700 text-zinc-200 font-mono text-xs font-bold rounded-lg shadow-xl flex items-center justify-center gap-2 transition-colors cursor-pointer shrink-0"
         >
           <QrCode className="w-4 h-4 text-cyan-400 shrink-0" />
           <span className="hidden sm:inline">PANDUAN & QR AR</span>

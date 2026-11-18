@@ -28,6 +28,12 @@ export default function ModelViewer({ product, onSelectHotspot }) {
 
   const defaultOrbit = product?.cameraDefaults?.orbit || '30deg 60deg auto';
 
+  const getAndroidSceneViewerIntent = () => {
+    if (typeof window === 'undefined') return '#';
+    const glbAbsoluteUrl = new URL(product.modelUrl, window.location.href).href;
+    return `intent://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(glbAbsoluteUrl)}&mode=ar_only&resizable=true&title=${encodeURIComponent(product.name)}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;end;`;
+  };
+
   useEffect(() => {
     const ua = navigator.userAgent || navigator.vendor || window.opera;
     const isMobile = /android|iphone|ipad|ipod|windows phone/i.test(ua.toLowerCase());
@@ -248,11 +254,11 @@ export default function ModelViewer({ product, onSelectHotspot }) {
             </div>
           </div>
 
-          {/* Native AR Launch Button Slot for Model Viewer (iOS Safari Quick Look USDZ & Android Scene Viewer) */}
+          {/* Native AR Launch Button Slot for Model Viewer (Android Scene Viewer & iOS Quick Look) */}
           <button
             slot="ar-button"
             id="ar-button"
-            className="absolute bottom-4 right-4 z-30 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-mono text-xs font-bold rounded-lg shadow-2xl flex items-center gap-2 border border-blue-400/30 transition-all active:scale-95 cursor-pointer"
+            className="absolute bottom-14 right-3 sm:bottom-14 sm:right-3 z-30 px-3.5 py-2 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-mono text-xs font-bold rounded-lg shadow-2xl flex items-center gap-2 border border-blue-400/30 transition-all active:scale-95 cursor-pointer"
           >
             <Smartphone className="w-4 h-4 text-cyan-200 animate-pulse" />
             <span>PROYEKSI MEJA (WEB AR)</span>
@@ -321,34 +327,37 @@ export default function ModelViewer({ product, onSelectHotspot }) {
           <span>Tahan klik/geser untuk orbit 360° • Scroll untuk zoom</span>
         </div>
 
-        {/* QR & AR Help Trigger Button */}
+        {/* QR & AR Multi-Platform Help Trigger Button */}
         <button
           onClick={() => setShowQrModal(true)}
           className="pointer-events-auto w-full sm:w-auto px-4 py-2 bg-zinc-900/95 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 font-mono text-xs font-bold rounded-lg shadow-md flex items-center justify-center gap-2 transition-colors cursor-pointer"
         >
           <QrCode className="w-4 h-4 text-cyan-400" />
-          <span>PANDUAN & SCAN QR AR</span>
+          <span>PANDUAN AR (ANDROID & IPHONE)</span>
         </button>
       </div>
 
-      {/* QR Code & Direct AR Modal */}
+      {/* Multi-Platform QR Code & Direct AR Modal (Android & iOS Equal Support) */}
       {showQrModal && (
         <div 
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-sm pointer-events-auto"
           onClick={() => setShowQrModal(false)}
         >
           <div 
-            className="bg-white rounded-2xl max-w-sm w-full border border-zinc-300 shadow-2xl p-6 text-zinc-900 max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-2xl max-w-md w-full border border-zinc-300 shadow-2xl p-6 text-zinc-900 max-h-[92vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-start mb-3">
               <div>
                 <span className="text-[10px] font-mono font-bold text-blue-700 uppercase tracking-wider block">
-                  WebXR & Apple Quick Look Protocol
+                  WebXR Multi-Platform Protocol
                 </span>
                 <h3 className="text-base font-bold text-zinc-950 mt-0.5">
                   Proyeksi Meja Fisik Kelas
                 </h3>
+                <p className="text-[11px] text-zinc-500 font-sans mt-0.5">
+                  Bebas gunakan smartphone <strong>Android</strong> maupun <strong>iPhone</strong> tanpa instalasi file APK.
+                </p>
               </div>
               <button
                 onClick={() => setShowQrModal(false)}
@@ -358,63 +367,96 @@ export default function ModelViewer({ product, onSelectHotspot }) {
               </button>
             </div>
 
-            {/* Direct iOS Quick Look Action for iPhone Safari Users */}
-            <a
-              rel="ar"
-              href={product.usdzUrl}
-              className="w-full mb-3 py-2.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-md flex items-center justify-center gap-2 font-mono transition-all"
-            >
-              <Smartphone className="w-4 h-4 text-cyan-200" />
-              <span>BUKA LANGSUNG AR (IPHONE SAFARI)</span>
-            </a>
+            {/* Direct Mobile Launchers for Both Platforms */}
+            <div className="space-y-2 mb-4">
+              <div className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wide">
+                Aktivasi Langsung di Smartphone Anda:
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {/* Android Trigger Card */}
+                <a
+                  href={getAndroidSceneViewerIntent()}
+                  className="p-3 bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 rounded-xl flex flex-col justify-between transition-all group"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] font-mono font-bold text-emerald-800 uppercase flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                      Android (Chrome)
+                    </span>
+                    <span className="text-[10px] font-mono text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded border border-emerald-300">
+                      .GLB
+                    </span>
+                  </div>
+                  <span className="text-xs font-bold text-emerald-950 group-hover:text-emerald-800">
+                    Buka Google Scene Viewer
+                  </span>
+                  <span className="text-[10px] text-emerald-700 mt-1">
+                    Samsung, Xiaomi, Oppo, Vivo, Poco, Pixel, dll.
+                  </span>
+                </a>
 
-            <p className="text-xs text-zinc-600 leading-relaxed mb-3 font-sans">
-              Buka di ponsel pintar untuk memproyeksikan prototipe <strong>{product.name}</strong> skala 1:1 di meja fisik kelas:
-            </p>
+                {/* iPhone / iOS Trigger Card */}
+                <a
+                  rel="ar"
+                  href={product.usdzUrl}
+                  className="p-3 bg-blue-50 hover:bg-blue-100/80 border border-blue-200 rounded-xl flex flex-col justify-between transition-all group"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] font-mono font-bold text-blue-800 uppercase flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                      Apple iOS (Safari)
+                    </span>
+                    <span className="text-[10px] font-mono text-blue-700 bg-blue-100 px-1.5 py-0.2 rounded border border-blue-300">
+                      .USDZ
+                    </span>
+                  </div>
+                  <span className="text-xs font-bold text-blue-950 group-hover:text-blue-800">
+                    Buka Apple Quick Look
+                  </span>
+                  <span className="text-[10px] text-blue-700 mt-1">
+                    iPhone 8 s.d. 16 Pro, iPad (ARKit)
+                  </span>
+                </a>
+              </div>
+            </div>
 
-            {/* QR Container */}
+            {/* QR Container for Desktop / Laptop Screens */}
             <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-3 flex flex-col items-center justify-center mb-3">
+              <span className="text-[10px] font-mono font-bold text-zinc-600 mb-2 uppercase">
+                Pindai dengan Kamera Smartphone Anda:
+              </span>
               {qrDataUrl ? (
                 <img 
                   src={qrDataUrl} 
                   alt="QR Code Web AR" 
-                  className="w-44 h-44 rounded bg-white p-2 border border-zinc-200"
+                  className="w-40 h-40 rounded bg-white p-2 border border-zinc-200 shadow-sm"
                 />
               ) : (
-                <div className="w-44 h-44 flex items-center justify-center text-xs text-zinc-400">
+                <div className="w-40 h-40 flex items-center justify-center text-xs text-zinc-400">
                   Memuat QR Code...
                 </div>
               )}
               <span className="text-[10px] font-mono text-zinc-500 mt-2 text-center">
-                Safari iOS (Apple USDZ) / Chrome Android (Scene Viewer)
+                Membuka prototipe interaktif di browser ponsel Anda
               </span>
             </div>
 
-            {/* Troubleshooting Checklist for iPhone & Android */}
-            <div className="bg-amber-50/80 border border-amber-200 rounded-lg p-2.5 mb-3 text-[11px] text-amber-900 font-sans space-y-1">
-              <div className="font-bold font-mono text-[10px] text-amber-800 uppercase tracking-wide">
-                Tips Khusus Pengguna iPhone (Termasuk iPhone 8):
+            {/* Universal 3 Step Protocol for Classroom Testing */}
+            <div className="space-y-1.5 mb-4 text-[11px] text-zinc-600 font-sans bg-zinc-100/70 p-3 rounded-xl border border-zinc-200">
+              <div className="text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">
+                Langkah Uji Coba di Meja Fisik Kelas:
               </div>
-              <ul className="list-disc list-inside space-y-0.5 text-amber-800/90 text-[10.5px]">
-                <li>Wajib gunakan <strong>Safari</strong> (bukan Chrome iOS / WA).</li>
-                <li>Gunakan meja <strong>bermotif/tekstur</strong> (kayu/kertas), hindari kaca bening karena iPhone 8 belum ada sensor LiDAR.</li>
-                <li>Gerakkan ponsel perlahan ke samping untuk kalibrasi.</li>
-              </ul>
-            </div>
-
-            {/* 3 Step Protocol */}
-            <div className="space-y-1.5 mb-4 text-[11px] text-zinc-600 font-sans">
-              <div className="flex items-center gap-2">
-                <span className="w-4 h-4 rounded bg-zinc-100 font-mono font-bold text-[10px] flex items-center justify-center text-zinc-800">1</span>
-                <span>Pindai QR atau buka tautan di browser bawaan ponsel.</span>
+              <div className="flex items-start gap-2">
+                <span className="w-4 h-4 rounded bg-zinc-200 font-mono font-bold text-[10px] flex items-center justify-center text-zinc-800 shrink-0 mt-0.5">1</span>
+                <span>Buka di browser bawaan ponsel (<strong>Google Chrome</strong> di Android atau <strong>Safari</strong> di iPhone).</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="w-4 h-4 rounded bg-zinc-100 font-mono font-bold text-[10px] flex items-center justify-center text-zinc-800">2</span>
-                <span>Sentuh tombol <strong>"PROYEKSI MEJA (WEB AR)"</strong>.</span>
+              <div className="flex items-start gap-2">
+                <span className="w-4 h-4 rounded bg-zinc-200 font-mono font-bold text-[10px] flex items-center justify-center text-zinc-800 shrink-0 mt-0.5">2</span>
+                <span>Sentuh tombol biru <strong>"PROYEKSI MEJA (WEB AR)"</strong>.</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="w-4 h-4 rounded bg-zinc-100 font-mono font-bold text-[10px] flex items-center justify-center text-zinc-800">3</span>
-                <span>Sorot meja kelas untuk meletakkan alat 1:1.</span>
+              <div className="flex items-start gap-2">
+                <span className="w-4 h-4 rounded bg-zinc-200 font-mono font-bold text-[10px] flex items-center justify-center text-zinc-800 shrink-0 mt-0.5">3</span>
+                <span>Arahkan kamera ke meja kelas bertekstur (kayu/kertas) dan gerakkan perlahan ke kiri/kanan untuk meletakkan alat skala 1:1.</span>
               </div>
             </div>
 

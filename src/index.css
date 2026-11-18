@@ -39,6 +39,38 @@ model-viewer {
   outline: none;
 }
 
+/* Native Web AR Activation Button for Android Scene Viewer & iOS AR Quick Look */
+#ar-button {
+  background-color: #2563eb;
+  color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  z-index: 30;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+#ar-button:hover {
+  background-color: #1d4ed8;
+  border-color: rgba(56, 189, 248, 0.8);
+}
+
+#ar-button:active {
+  transform: scale(0.96);
+}
+
 /* Precision Technical Hotspot Pin */
 .hotspot {
   display: flex;

@@ -39,13 +39,13 @@ def export_glb(filepath):
 
 def export_arkit_usdz(filepath):
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
-    # Rotate meshes around X by -90 deg so that Z-up maps to Y-up in USD
+    # Rotate meshes around X by +90 deg with center (0,0,0) so that Z-up (Z >= 0) maps to Y-up (Y >= 0) in Apple AR Quick Look
     bpy.ops.object.select_all(action='DESELECT')
     for obj in bpy.context.scene.objects:
         if obj.type == 'MESH':
             obj.select_set(True)
     
-    bpy.ops.transform.rotate(value=math.radians(-90), orient_axis='X')
+    bpy.ops.transform.rotate(value=math.radians(90), orient_axis='X', center_override=(0, 0, 0))
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
 
     tmp_usda = filepath.replace('.usdz', '.usda')

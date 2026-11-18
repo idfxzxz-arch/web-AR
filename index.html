@@ -10,6 +10,13 @@
     <meta name="theme-color" content="#090d16" />
     <meta name="description" content="KREAR: Media Pembelajaran Berbasis Augmented Reality untuk Meningkatkan Kompetensi Technopreneurship Mahasiswa melalui Digitalisasi Produk Industri Kreatif PT WD Group Solo." />
     
+    <!-- Auto Canonical Redirect to prevent 308 redirect failure on Apple AR Quick Look -->
+    <script>
+      if (typeof window !== 'undefined' && window.location.hostname === 'idxcodes.my.id') {
+        window.location.replace('https://www.idxcodes.my.id' + window.location.pathname + window.location.search + window.location.hash);
+      }
+    </script>
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tes Langsung Apple AR Quick Look</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 24px 16px;
+      background: #090d16;
+      color: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    h1 {
+      font-size: 18px;
+      margin: 0 0 8px 0;
+      color: #38bdf8;
+    }
+    p {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin: 0 0 20px 0;
+    }
+    .ar-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #2563eb;
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 14px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(37,99,235,0.4);
+    }
+    .ar-btn:active {
+      transform: scale(0.96);
+    }
+    .note {
+      margin-top: 18px;
+      font-size: 11px;
+      color: #64748b;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Tes Langsung Apple AR Quick Look</h1>
+    <p>Uji coba kamera AR di iPhone 8 (prototipe Smart Stage Lighting Controller skala 1:1).</p>
+
+    <!-- Apple ARKit Quick Look Anchor -->
+    <a rel="ar" href="https://www.idxcodes.my.id/models/lighting-controller.usdz" class="ar-btn">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3C/svg%3E" alt="Apple AR" style="width:0;height:0;position:absolute;opacity:0;" />
+      <span>🚀 BUKA KAMERA AR MEJA</span>
+    </a>
+
+    <div class="note">
+      Khusus dibuka di <strong>Safari iOS</strong> bawaan iPhone. Arahkan kamera ke meja bertekstur.
+    </div>
+  </div>
+</body>
+</html>

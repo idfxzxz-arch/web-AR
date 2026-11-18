@@ -29,6 +29,15 @@ export default function ModelViewer({ product, onSelectHotspot }) {
 
   const defaultOrbit = product?.cameraDefaults?.orbit || '30deg 60deg auto';
 
+  const getAbsoluteUsdzUrl = () => {
+    if (typeof window === 'undefined') return product.usdzUrl;
+    const host = window.location.hostname;
+    if (host === 'idxcodes.my.id' || host === 'www.idxcodes.my.id') {
+      return `https://www.idxcodes.my.id${product.usdzUrl}`;
+    }
+    return new URL(product.usdzUrl, window.location.href).href;
+  };
+
   const getAndroidSceneViewerIntent = () => {
     if (typeof window === 'undefined') return '#';
     const glbAbsoluteUrl = new URL(product.modelUrl, window.location.href).href;
@@ -232,7 +241,7 @@ export default function ModelViewer({ product, onSelectHotspot }) {
         <model-viewer
           ref={modelViewerRef}
           src={product.modelUrl}
-          ios-src={product.usdzUrl}
+          ios-src={getAbsoluteUsdzUrl()}
           alt={`Prototipe ${product.name}`}
           ar
           ar-modes="webxr scene-viewer quick-look"
@@ -264,18 +273,39 @@ export default function ModelViewer({ product, onSelectHotspot }) {
             </div>
           </div>
 
-          {/* Native AR Launch Button Slot for Model Viewer (Android Scene Viewer & iOS Quick Look) */}
-          <button
-            slot="ar-button"
-            id="ar-button"
-            className="pointer-events-auto absolute bottom-3 left-3 right-14 sm:left-auto sm:right-48 z-30 h-10 px-3 sm:px-4 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-mono text-xs font-bold rounded-lg shadow-xl flex items-center justify-center gap-1.5 sm:gap-2 border border-blue-400/30 transition-all active:scale-95 cursor-pointer"
-          >
-            <Smartphone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-200 animate-pulse shrink-0" />
-            <span className="truncate">PROYEKSI MEJA (WEB AR)</span>
-            <span className="bg-blue-900/80 text-cyan-300 text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded border border-blue-400/20 shrink-0 font-mono">
-              1:1
-            </span>
-          </button>
+          {/* Native AR Launch Button Slot for Model Viewer (Dual iOS rel=ar & Android WebXR Engine) */}
+          {mobileOS === 'ios' ? (
+            <a
+              slot="ar-button"
+              id="ar-button"
+              rel="ar"
+              href={getAbsoluteUsdzUrl()}
+              className="pointer-events-auto absolute bottom-3 left-3 right-14 sm:left-auto sm:right-48 z-30 h-10 px-3 sm:px-4 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-mono text-xs font-bold rounded-lg shadow-xl flex items-center justify-center gap-1.5 sm:gap-2 border border-blue-400/30 transition-all active:scale-95 cursor-pointer no-underline"
+            >
+              <img 
+                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3C/svg%3E" 
+                alt="Apple AR Quick Look" 
+                className="w-0 h-0 absolute opacity-0 pointer-events-none" 
+              />
+              <Smartphone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-200 animate-pulse shrink-0" />
+              <span className="truncate">PROYEKSI MEJA (WEB AR)</span>
+              <span className="bg-blue-900/80 text-cyan-300 text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded border border-blue-400/20 shrink-0 font-mono">
+                1:1
+              </span>
+            </a>
+          ) : (
+            <button
+              slot="ar-button"
+              id="ar-button"
+              className="pointer-events-auto absolute bottom-3 left-3 right-14 sm:left-auto sm:right-48 z-30 h-10 px-3 sm:px-4 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-mono text-xs font-bold rounded-lg shadow-xl flex items-center justify-center gap-1.5 sm:gap-2 border border-blue-400/30 transition-all active:scale-95 cursor-pointer"
+            >
+              <Smartphone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-200 animate-pulse shrink-0" />
+              <span className="truncate">PROYEKSI MEJA (WEB AR)</span>
+              <span className="bg-blue-900/80 text-cyan-300 text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded border border-blue-400/20 shrink-0 font-mono">
+                1:1
+              </span>
+            </button>
+          )}
 
           {/* 4 Precision Hotspots positioned directly on physical components */}
           {product.hotspots.map((hotspot, idx) => (
@@ -395,10 +425,15 @@ export default function ModelViewer({ product, onSelectHotspot }) {
                   {mobileOS === 'ios' ? (
                     <a
                       rel="ar"
-                      href={product.usdzUrl}
-                      className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-mono rounded-xl shadow-lg flex items-center justify-center gap-2 font-bold text-xs transition-all active:scale-95"
+                      href={getAbsoluteUsdzUrl()}
+                      className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-mono rounded-xl shadow-lg flex items-center justify-center gap-2 font-bold text-xs transition-all active:scale-95 no-underline cursor-pointer"
                     >
-                      <Smartphone className="w-4 h-4 text-cyan-200 animate-pulse" />
+                      <img 
+                        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3C/svg%3E" 
+                        alt="Apple AR Quick Look" 
+                        className="w-0 h-0 absolute opacity-0 pointer-events-none" 
+                      />
+                      <Smartphone className="w-4 h-4 text-cyan-200 animate-pulse shrink-0" />
                       <span>BUKA KAMERA AR (APPLE QUICK LOOK)</span>
                     </a>
                   ) : (

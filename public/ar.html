@@ -159,12 +159,17 @@
     </a>
 
     <!-- Android Scene Viewer Trigger -->
-    <a id="android-ar-btn" href="" class="ar-launch-btn hidden" style="background:#059669; box-shadow:0 8px 24px rgba(5,150,105,0.45);">
-      <div>
-        <span>🚀 KETUK BUKA GOOGLE AR</span>
-      </div>
-      <span class="btn-hint">Sentuh untuk memproyeksikan di meja Android</span>
-    </a>
+    <div id="android-container" class="hidden" style="width: 100%;">
+      <a id="android-ar-btn" href="" class="ar-launch-btn" style="background:#059669; box-shadow:0 8px 24px rgba(5,150,105,0.45); margin-bottom: 12px;">
+        <div>
+          <span>🚀 KETUK BUKA GOOGLE AR</span>
+        </div>
+        <span class="btn-hint">Sentuh untuk memproyeksikan di meja Android (1:1)</span>
+      </a>
+      <a id="android-fallback-btn" href="/" class="ar-launch-btn" style="background: #1f2937; border-color: #374151; font-size: 13px; padding: 14px 16px;">
+        <span>🌐 Buka Mode 3D Interaktif di Browser</span>
+      </a>
+    </div>
 
     <!-- Desktop Fallback Message -->
     <div id="desktop-msg" class="hidden">
@@ -243,7 +248,7 @@
       iosBtn.href = prod.usdz;
       iosBtn.classList.remove('hidden');
 
-      // Auto trigger on iOS load
+      // Attempt gentle auto click if permitted by iOS
       setTimeout(() => {
         try {
           iosBtn.click();
@@ -254,14 +259,16 @@
 
     } else if (isAndroid) {
       statusTag.textContent = 'Android (Google Scene Viewer)';
-      const sceneViewerIntent = `intent://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(prod.glb)}&mode=ar_only&resizable=true&title=${encodeURIComponent(prod.name)}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;end;`;
+      const fallbackUrl = encodeURIComponent(`https://www.idxcodes.my.id/?page=ar-gallery&product=${prodId}`);
+      const sceneViewerIntent = `intent://arvr.google.com/scene-viewer/1.2?file=${encodeURIComponent(prod.glb)}&mode=ar_preferred&title=${encodeURIComponent(prod.name)}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${fallbackUrl};end;`;
+      
       androidBtn.href = sceneViewerIntent;
-      androidBtn.classList.remove('hidden');
+      document.getElementById('android-fallback-btn').href = `/?page=ar-gallery&product=${prodId}`;
+      document.getElementById('android-container').classList.remove('hidden');
 
-      // Auto redirect to Scene Viewer
-      setTimeout(() => {
-        window.location.href = sceneViewerIntent;
-      }, 200);
+      // Note: Do NOT auto-redirect via setTimeout on Android!
+      // Android Chrome & Google Lens Custom Tab block intents not initiated by a user gesture.
+      // A genuine user tap on androidBtn ensures the intent executes reliably without ERR_UNKNOWN_URL_SCHEME.
 
     } else {
       statusTag.textContent = 'PC / Desktop View';

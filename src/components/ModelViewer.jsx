@@ -40,8 +40,27 @@ export default function ModelViewer({ product, onSelectHotspot }) {
 
   const getAndroidSceneViewerIntent = () => {
     if (typeof window === 'undefined') return '#';
-    const glbAbsoluteUrl = new URL(product.modelUrl, window.location.href).href;
-    return `intent://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(glbAbsoluteUrl)}&mode=ar_only&resizable=true&title=${encodeURIComponent(product.name)}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;end;`;
+    const host = window.location.hostname;
+    const baseUrl = (host === 'idxcodes.my.id' || host === 'www.idxcodes.my.id')
+      ? 'https://www.idxcodes.my.id'
+      : window.location.origin;
+    const glbAbsoluteUrl = `${baseUrl}${product.modelUrl}`;
+    const fallbackUrl = encodeURIComponent(`${baseUrl}/?page=ar-gallery&product=${product.id}`);
+    return `intent://arvr.google.com/scene-viewer/1.2?file=${encodeURIComponent(glbAbsoluteUrl)}&mode=ar_preferred&title=${encodeURIComponent(product.name)}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${fallbackUrl};end;`;
+  };
+
+  const handleAndroidARLaunch = () => {
+    if (modelViewerRef.current && typeof modelViewerRef.current.activateAR === 'function') {
+      try {
+        modelViewerRef.current.activateAR();
+        setShowQrModal(false);
+        return;
+      } catch (err) {
+        console.warn('activateAR fallback to intent:', err);
+      }
+    }
+    // Fallback if activateAR not available
+    window.location.href = getAndroidSceneViewerIntent();
   };
 
   useEffect(() => {
@@ -439,13 +458,14 @@ export default function ModelViewer({ product, onSelectHotspot }) {
                       <span>BUKA KAMERA AR (APPLE QUICK LOOK)</span>
                     </a>
                   ) : (
-                    <a
-                      href={getAndroidSceneViewerIntent()}
-                      className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-mono rounded-xl shadow-lg flex items-center justify-center gap-2 font-bold text-xs transition-all active:scale-95"
+                    <button
+                      type="button"
+                      onClick={handleAndroidARLaunch}
+                      className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-mono rounded-xl shadow-lg flex items-center justify-center gap-2 font-bold text-xs transition-all active:scale-95 cursor-pointer"
                     >
                       <Smartphone className="w-4 h-4 text-emerald-200 animate-pulse" />
                       <span>BUKA KAMERA AR (GOOGLE SCENE VIEWER)</span>
-                    </a>
+                    </button>
                   )}
 
                   <p className="text-[10px] text-zinc-500 text-center font-sans">

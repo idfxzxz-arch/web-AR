@@ -4,7 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#090d16">
-  <title>KREAR AR Instant Launcher</title>
+  <title>KREAR AR Universal Launcher</title>
+  
+  <!-- Official Google Model Viewer Web Component -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -21,11 +25,14 @@
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      padding: 24px 16px;
+      padding: 16px 12px;
     }
     .header {
       text-align: center;
-      margin-top: 12px;
+      margin-top: 8px;
+      margin-bottom: 12px;
+      width: 100%;
+      max-width: 420px;
     }
     .badge {
       display: inline-block;
@@ -35,91 +42,128 @@
       color: #38bdf8;
       background: rgba(56, 189, 248, 0.12);
       border: 1px solid rgba(56, 189, 248, 0.3);
-      padding: 4px 10px;
+      padding: 3px 10px;
       border-radius: 6px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     h1 {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 800;
-      margin: 0 0 6px 0;
+      margin: 0 0 4px 0;
       letter-spacing: -0.02em;
       color: #ffffff;
+      line-height: 1.3;
     }
     .sub {
-      font-size: 12px;
+      font-size: 11px;
       color: #94a3b8;
       margin: 0;
       font-family: ui-monospace, Menlo, Consolas, monospace;
     }
-    .center-card {
+
+    /* 3D Viewport Card */
+    .viewport-card {
       width: 100%;
-      max-width: 360px;
+      max-width: 420px;
       background: #111827;
       border: 1px solid #1f2937;
       border-radius: 20px;
-      padding: 24px 20px;
-      text-align: center;
+      overflow: hidden;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
     }
+
+    model-viewer {
+      width: 100%;
+      height: 290px;
+      background: radial-gradient(circle at center, #1e293b 0%, #0f172a 70%, #090d16 100%);
+      --poster-color: transparent;
+    }
+
+    .controls-panel {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #111827;
+      border-top: 1px solid #1f2937;
+    }
+
     .ar-launch-btn {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 4px;
       width: 100%;
-      padding: 20px 16px;
+      padding: 16px 14px;
       background: #2563eb;
       color: #ffffff;
       text-decoration: none;
-      border-radius: 14px;
-      font-size: 15px;
+      border-radius: 12px;
+      font-size: 14px;
       font-weight: 800;
       font-family: ui-monospace, Menlo, Consolas, monospace;
-      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.2);
       transition: transform 0.1s ease, background 0.1s ease;
       cursor: pointer;
+      text-align: center;
     }
     .ar-launch-btn:active {
       transform: scale(0.97);
-      background: #1d4ed8;
     }
     .btn-hint {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 500;
       opacity: 0.9;
       font-family: -apple-system, sans-serif;
     }
-    .pulse-dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #38bdf8;
-      box-shadow: 0 0 10px #38bdf8;
-      margin-right: 6px;
-    }
-    .status-box {
-      margin-top: 16px;
-      padding: 10px 12px;
-      background: rgba(255, 255, 255, 0.04);
+
+    /* Google Lens / In-App Browser Notice */
+    .lens-notice {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
       border-radius: 10px;
+      padding: 10px 12px;
       font-size: 11px;
+      color: #fde68a;
+      line-height: 1.45;
+      text-align: left;
+    }
+    .lens-notice strong {
+      color: #fbbf24;
+    }
+
+    .status-box {
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 8px;
+      font-size: 10px;
       color: #94a3b8;
       display: flex;
       align-items: center;
       justify-content: space-between;
       font-family: ui-monospace, Menlo, Consolas, monospace;
     }
+    .pulse-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 8px #38bdf8;
+      margin-right: 5px;
+    }
     .device-tag {
       color: #38bdf8;
       font-weight: bold;
     }
+
     .footer-link {
-      font-size: 12px;
+      font-size: 11px;
       color: #64748b;
       text-decoration: none;
       display: inline-flex;
@@ -128,6 +172,7 @@
       padding: 8px 12px;
       border-radius: 8px;
       transition: color 0.15s ease;
+      margin-top: 10px;
     }
     .footer-link:hover {
       color: #38bdf8;
@@ -146,52 +191,82 @@
     <p class="sub">Validasi Spasial Meja Fisik Kelas (Skala 1:1)</p>
   </div>
 
-  <!-- Center AR Launch Card -->
-  <div class="center-card">
-    <!-- iOS Apple AR Quick Look Trigger -->
-    <a id="ios-ar-btn" rel="ar" href="" class="ar-launch-btn hidden">
-      <!-- Apple specification: img MUST be first child of rel="ar" anchor -->
-      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3C/svg%3E" alt="Apple AR" style="width:0;height:0;position:absolute;opacity:0;" />
-      <div>
-        <span>🚀 KETUK BUKA APPLE AR</span>
-      </div>
-      <span class="btn-hint">Sentuh untuk memproyeksikan di meja iPhone</span>
-    </a>
+  <!-- Center AR Viewport Card -->
+  <div class="viewport-card">
+    
+    <!-- 3D Interactive Model Viewer with WebXR & Scene Viewer Native Integration -->
+    <model-viewer
+      id="main-viewer"
+      src="https://www.idxcodes.my.id/models/lighting-controller.glb"
+      ios-src="https://www.idxcodes.my.id/models/lighting-controller.usdz"
+      alt="Prototipe 3D KREAR"
+      ar
+      ar-modes="webxr scene-viewer quick-look"
+      ar-scale="auto"
+      camera-controls
+      touch-action="pan-y"
+      auto-rotate
+      rotation-per-second="15deg"
+      shadow-intensity="1.2"
+      exposure="1.0"
+      interaction-prompt="none"
+    >
+    </model-viewer>
 
-    <!-- Android Scene Viewer Trigger -->
-    <div id="android-container" class="hidden" style="width: 100%;">
-      <a id="android-ar-btn" href="" class="ar-launch-btn" style="background:#059669; box-shadow:0 8px 24px rgba(5,150,105,0.45); margin-bottom: 12px;">
+    <!-- Controls Panel -->
+    <div class="controls-panel">
+      
+      <!-- iOS Apple AR Quick Look Trigger -->
+      <a id="ios-ar-btn" rel="ar" href="" class="ar-launch-btn hidden">
+        <!-- Apple specification: img MUST be first child of rel="ar" anchor -->
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3C/svg%3E" alt="Apple AR" style="width:0;height:0;position:absolute;opacity:0;" />
         <div>
-          <span>🚀 KETUK BUKA GOOGLE AR</span>
+          <span>🚀 BUKA APPLE AR QUICK LOOK</span>
         </div>
-        <span class="btn-hint">Sentuh untuk memproyeksikan di meja Android (1:1)</span>
+        <span class="btn-hint">Sentuh untuk memproyeksikan di meja iPhone (1:1)</span>
       </a>
-      <a id="android-fallback-btn" href="/" class="ar-launch-btn" style="background: #1f2937; border-color: #374151; font-size: 13px; padding: 14px 16px;">
-        <span>🌐 Buka Mode 3D Interaktif di Browser</span>
-      </a>
-    </div>
 
-    <!-- Desktop Fallback Message -->
-    <div id="desktop-msg" class="hidden">
-      <p style="font-size: 13px; color: #cbd5e1; line-height: 1.5; margin: 0 0 12px 0;">
-        Halaman peluncur AR instan ini dirancang khusus untuk smartphone <strong>iPhone</strong> atau <strong>Android</strong>.
-      </p>
-      <a id="web-fallback-btn" href="/" class="ar-launch-btn" style="background: #374151; font-size: 13px;">
-        Buka Dashboard Web KREAR
-      </a>
-    </div>
+      <!-- Android AR Trigger (Scene Viewer & WebXR) -->
+      <div id="android-container" class="hidden" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+        <a id="android-ar-btn" href="" class="ar-launch-btn" style="background:#059669; box-shadow:0 6px 20px rgba(5,150,105,0.4);">
+          <div>
+            <span>🚀 BUKA KAMERA GOOGLE AR</span>
+          </div>
+          <span class="btn-hint">Sentuh untuk memproyeksikan di meja Android (1:1)</span>
+        </a>
 
-    <!-- Telemetry Status Box -->
-    <div class="status-box">
-      <span><span class="pulse-dot"></span>STATUS:</span>
-      <span class="device-tag" id="device-status">Mendeteksi perangkat...</span>
+        <!-- Notice for Google Lens & In-App WebViews -->
+        <div id="lens-hint" class="lens-notice hidden">
+          <strong>💡 Tips Google Lens / In-App Browser:</strong><br>
+          Jika kamera AR tidak terbuka langsung, ketuk ikon titik tiga (<strong>⋮</strong>) di pojok kanan atas layar Anda ➔ pilih <strong>"Buka di Chrome"</strong> (*Open in Chrome*) agar sistem Android mengaktifkan kamera AR.
+        </div>
+      </div>
+
+      <!-- Desktop View Notice -->
+      <div id="desktop-msg" class="hidden">
+        <p style="font-size: 12px; color: #cbd5e1; line-height: 1.5; margin: 0 0 8px 0; text-align: center;">
+          Gunakan smartphone <strong>iPhone</strong> atau <strong>Android</strong> untuk memproyeksikan model 3D ini ke meja fisik Anda.
+        </p>
+      </div>
+
+      <!-- Secondary Web Dashboard Fallback -->
+      <a id="full-dashboard-btn" href="/" class="ar-launch-btn" style="background: #1f2937; border-color: #374151; font-size: 12px; padding: 12px 14px; box-shadow: none;">
+        <span>🌐 Buka Mode 3D & Kuis Lengkap di Browser</span>
+      </a>
+
+      <!-- Telemetry Status Box -->
+      <div class="status-box">
+        <span><span class="pulse-dot"></span>STATUS:</span>
+        <span class="device-tag" id="device-status">Mendeteksi perangkat...</span>
+      </div>
+
     </div>
   </div>
 
   <!-- Footer Navigation -->
   <div>
     <a id="full-site-link" href="/" class="footer-link">
-      <span>← Buka Lembar Kerja & Spesifikasi Lengkap KREAR</span>
+      <span>← Kembali ke Modul Pembelajaran KREAR</span>
     </a>
   </div>
 
@@ -231,17 +306,29 @@
     // Update UI elements
     document.getElementById('prod-code').textContent = prod.code;
     document.getElementById('prod-name').textContent = prod.name;
-    document.getElementById('full-site-link').href = `/?page=ar-gallery&product=${prodId}`;
+    
+    const dashboardUrl = `/?page=ar-gallery&product=${prodId}`;
+    document.getElementById('full-dashboard-btn').href = dashboardUrl;
+    document.getElementById('full-site-link').href = dashboardUrl;
+
+    // Update 3D Model Viewer Sources
+    const viewer = document.getElementById('main-viewer');
+    viewer.src = prod.glb;
+    viewer.iosSrc = prod.usdz;
 
     // Device detection
     const ua = navigator.userAgent || navigator.vendor || window.opera;
     const isIos = /iphone|ipad|ipod/i.test(ua);
     const isAndroid = /android/i.test(ua);
+    const isGoogleLens = /GoogleLens/i.test(ua);
+    const isWebView = /wv|WebView/i.test(ua) || (isAndroid && !/Chrome\/[.0-9]+ Mobile/i.test(ua));
 
     const iosBtn = document.getElementById('ios-ar-btn');
     const androidBtn = document.getElementById('android-ar-btn');
+    const androidContainer = document.getElementById('android-container');
     const desktopMsg = document.getElementById('desktop-msg');
     const statusTag = document.getElementById('device-status');
+    const lensHint = document.getElementById('lens-hint');
 
     if (isIos) {
       statusTag.textContent = 'Apple iOS (ARKit Quick Look)';
@@ -258,17 +345,31 @@
       }, 150);
 
     } else if (isAndroid) {
-      statusTag.textContent = 'Android (Google Scene Viewer)';
+      statusTag.textContent = isGoogleLens ? 'Android (Google Lens Preview)' : 'Android (Google ARCore)';
+      
       const fallbackUrl = encodeURIComponent(`https://www.idxcodes.my.id/?page=ar-gallery&product=${prodId}`);
       const sceneViewerIntent = `intent://arvr.google.com/scene-viewer/1.2?file=${encodeURIComponent(prod.glb)}&mode=ar_preferred&title=${encodeURIComponent(prod.name)}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${fallbackUrl};end;`;
       
       androidBtn.href = sceneViewerIntent;
-      document.getElementById('android-fallback-btn').href = `/?page=ar-gallery&product=${prodId}`;
-      document.getElementById('android-container').classList.remove('hidden');
+      androidContainer.classList.remove('hidden');
 
-      // Note: Do NOT auto-redirect via setTimeout on Android!
-      // Android Chrome & Google Lens Custom Tab block intents not initiated by a user gesture.
-      // A genuine user tap on androidBtn ensures the intent executes reliably without ERR_UNKNOWN_URL_SCHEME.
+      if (isGoogleLens || isWebView) {
+        lensHint.classList.remove('hidden');
+      }
+
+      // Fallback click handler if intent scheme fails in WebView
+      androidBtn.addEventListener('click', (e) => {
+        if (isGoogleLens || isWebView) {
+          // If in Google Lens/WebView, try model-viewer native activateAR first
+          if (viewer && typeof viewer.activateAR === 'function') {
+            try {
+              viewer.activateAR();
+            } catch (err) {
+              console.warn('activateAR error:', err);
+            }
+          }
+        }
+      });
 
     } else {
       statusTag.textContent = 'PC / Desktop View';

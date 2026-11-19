@@ -1,8 +1,12 @@
 {
   "name": "krear-webxr-edtech",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
+  "description": "> **Judul Skripsi:** Pengembangan KREAR: Media Pembelajaran Berbasis Augmented Reality untuk Meningkatkan Kompetensi Technopreneurship Mahasiswa melalui Digitalisasi Produk Industri Kreatif   > **Program Studi:** Pendidikan Teknik Informatika (PTI) FKIP Universitas Muhammadiyah Surakarta   > **Subjek Pengguna:** 15 Mahasiswa S1 Teknik Komputer Universitas Muhammadiyah Karanganyar (UMUKA)   > **Mitra Industri (DUDI):** PT WD Group Solo   > **Dosen Pengampu:** Wildan Deni Fahrezi, S.Pd., M.Pd.",
+  "license": "ISC",
+  "author": "",
   "type": "module",
+  "main": "postcss.config.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -26,4 +30,3 @@
     "vite": "^6.1.0"
   }
 }
-

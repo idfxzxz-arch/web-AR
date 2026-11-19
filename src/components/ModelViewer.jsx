@@ -46,7 +46,7 @@ export default function ModelViewer({ product, onSelectHotspot }) {
       : window.location.origin;
     const glbAbsoluteUrl = `${baseUrl}${product.modelUrl}`;
     const fallbackUrl = encodeURIComponent(`${baseUrl}/?page=ar-gallery&product=${product.id}`);
-    return `intent://arvr.google.com/scene-viewer/1.2?file=${encodeURIComponent(glbAbsoluteUrl)}&mode=ar_preferred&title=${encodeURIComponent(product.name)}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${fallbackUrl};end;`;
+    return `intent://arvr.google.com/scene-viewer/1.2?file=${encodeURIComponent(glbAbsoluteUrl)}&mode=ar_preferred&title=${encodeURIComponent(product.name)}#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;S.browser_fallback_url=${fallbackUrl};end;`;
   };
 
   const handleAndroidARLaunch = () => {

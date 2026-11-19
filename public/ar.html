@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#090d16">
+  <title>KREAR AR Instant Launcher</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #090d16;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 16px;
+    }
+    .header {
+      text-align: center;
+      margin-top: 12px;
+    }
+    .badge {
+      display: inline-block;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-size: 20px;
+      font-weight: 800;
+      margin: 0 0 6px 0;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+    .sub {
+      font-size: 12px;
+      color: #94a3b8;
+      margin: 0;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+    }
+    .center-card {
+      width: 100%;
+      max-width: 360px;
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 20px;
+      padding: 24px 20px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      margin: 20px 0;
+    }
+    .ar-launch-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 20px 16px;
+      background: #2563eb;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 800;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: transform 0.1s ease, background 0.1s ease;
+      cursor: pointer;
+    }
+    .ar-launch-btn:active {
+      transform: scale(0.97);
+      background: #1d4ed8;
+    }
+    .btn-hint {
+      font-size: 11px;
+      font-weight: 500;
+      opacity: 0.9;
+      font-family: -apple-system, sans-serif;
+    }
+    .pulse-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 10px #38bdf8;
+      margin-right: 6px;
+    }
+    .status-box {
+      margin-top: 16px;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 10px;
+      font-size: 11px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+    }
+    .device-tag {
+      color: #38bdf8;
+      font-weight: bold;
+    }
+    .footer-link {
+      font-size: 12px;
+      color: #64748b;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: color 0.15s ease;
+    }
+    .footer-link:hover {
+      color: #38bdf8;
+    }
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Academic Metadata -->
+  <div class="header">
+    <div class="badge" id="prod-code">WD-LC-01</div>
+    <h1 id="prod-name">Smart Stage Lighting Controller</h1>
+    <p class="sub">Validasi Spasial Meja Fisik Kelas (Skala 1:1)</p>
+  </div>
+
+  <!-- Center AR Launch Card -->
+  <div class="center-card">
+    <!-- iOS Apple AR Quick Look Trigger -->
+    <a id="ios-ar-btn" rel="ar" href="" class="ar-launch-btn hidden">
+      <!-- Apple specification: img MUST be first child of rel="ar" anchor -->
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3C/svg%3E" alt="Apple AR" style="width:0;height:0;position:absolute;opacity:0;" />
+      <div>
+        <span>🚀 KETUK BUKA APPLE AR</span>
+      </div>
+      <span class="btn-hint">Sentuh untuk memproyeksikan di meja iPhone</span>
+    </a>
+
+    <!-- Android Scene Viewer Trigger -->
+    <a id="android-ar-btn" href="" class="ar-launch-btn hidden" style="background:#059669; box-shadow:0 8px 24px rgba(5,150,105,0.45);">
+      <div>
+        <span>🚀 KETUK BUKA GOOGLE AR</span>
+      </div>
+      <span class="btn-hint">Sentuh untuk memproyeksikan di meja Android</span>
+    </a>
+
+    <!-- Desktop Fallback Message -->
+    <div id="desktop-msg" class="hidden">
+      <p style="font-size: 13px; color: #cbd5e1; line-height: 1.5; margin: 0 0 12px 0;">
+        Halaman peluncur AR instan ini dirancang khusus untuk smartphone <strong>iPhone</strong> atau <strong>Android</strong>.
+      </p>
+      <a id="web-fallback-btn" href="/" class="ar-launch-btn" style="background: #374151; font-size: 13px;">
+        Buka Dashboard Web KREAR
+      </a>
+    </div>
+
+    <!-- Telemetry Status Box -->
+    <div class="status-box">
+      <span><span class="pulse-dot"></span>STATUS:</span>
+      <span class="device-tag" id="device-status">Mendeteksi perangkat...</span>
+    </div>
+  </div>
+
+  <!-- Footer Navigation -->
+  <div>
+    <a id="full-site-link" href="/" class="footer-link">
+      <span>← Buka Lembar Kerja & Spesifikasi Lengkap KREAR</span>
+    </a>
+  </div>
+
+  <script>
+    const products = {
+      'lighting-controller': {
+        code: 'WD-LC-01',
+        name: 'Smart Stage Lighting Controller',
+        usdz: 'https://www.idxcodes.my.id/models/lighting-controller.usdz',
+        glb: 'https://www.idxcodes.my.id/models/lighting-controller.glb'
+      },
+      'futsal-timer': {
+        code: 'WD-FT-02',
+        name: 'Smart Futsal Court Timer & Scoreboard',
+        usdz: 'https://www.idxcodes.my.id/models/futsal-timer.usdz',
+        glb: 'https://www.idxcodes.my.id/models/futsal-timer.glb'
+      },
+      'event-access': {
+        code: 'WD-EA-03',
+        name: 'IoT Smart Event Access Barrier Gate',
+        usdz: 'https://www.idxcodes.my.id/models/event-access.usdz',
+        glb: 'https://www.idxcodes.my.id/models/event-access.glb'
+      },
+      'audio-monitor': {
+        code: 'WD-AM-04',
+        name: 'Digital Audio Level & Acoustic Monitor',
+        usdz: 'https://www.idxcodes.my.id/models/audio-monitor.usdz',
+        glb: 'https://www.idxcodes.my.id/models/audio-monitor.glb'
+      }
+    };
+
+    // Parse URL params
+    const params = new URLSearchParams(window.location.search);
+    const prodId = params.get('id') || params.get('product') || 'lighting-controller';
+    const prod = products[prodId] || products['lighting-controller'];
+
+    // Update UI elements
+    document.getElementById('prod-code').textContent = prod.code;
+    document.getElementById('prod-name').textContent = prod.name;
+    document.getElementById('full-site-link').href = `/?page=ar-gallery&product=${prodId}`;
+
+    // Device detection
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    const isIos = /iphone|ipad|ipod/i.test(ua);
+    const isAndroid = /android/i.test(ua);
+
+    const iosBtn = document.getElementById('ios-ar-btn');
+    const androidBtn = document.getElementById('android-ar-btn');
+    const desktopMsg = document.getElementById('desktop-msg');
+    const statusTag = document.getElementById('device-status');
+
+    if (isIos) {
+      statusTag.textContent = 'Apple iOS (ARKit Quick Look)';
+      iosBtn.href = prod.usdz;
+      iosBtn.classList.remove('hidden');
+
+      // Auto trigger on iOS load
+      setTimeout(() => {
+        try {
+          iosBtn.click();
+        } catch (err) {
+          console.warn('Auto click prevented by iOS security:', err);
+        }
+      }, 150);
+
+    } else if (isAndroid) {
+      statusTag.textContent = 'Android (Google Scene Viewer)';
+      const sceneViewerIntent = `intent://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(prod.glb)}&mode=ar_only&resizable=true&title=${encodeURIComponent(prod.name)}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;end;`;
+      androidBtn.href = sceneViewerIntent;
+      androidBtn.classList.remove('hidden');
+
+      // Auto redirect to Scene Viewer
+      setTimeout(() => {
+        window.location.href = sceneViewerIntent;
+      }, 200);
+
+    } else {
+      statusTag.textContent = 'PC / Desktop View';
+      desktopMsg.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>

@@ -20,9 +20,7 @@ export default function ModelViewer({ product, onSelectHotspot }) {
   const [autoRotate, setAutoRotate] = useState(false); // Default to false for precision inspection
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
-  const [qrMode, setQrMode] = useState('smart'); // 'smart' (ar.html auto launch) or 'direct-ios' (direct usdz)
   const [qrSmartDataUrl, setQrSmartDataUrl] = useState('');
-  const [qrDirectIosDataUrl, setQrDirectIosDataUrl] = useState('');
   const [isMobileDevice, setIsMobileDevice] = useState(false);
   const [mobileOS, setMobileOS] = useState('desktop'); // 'ios' | 'android' | 'desktop'
   const [loadingError, setLoadingError] = useState(false);
@@ -65,7 +63,7 @@ export default function ModelViewer({ product, onSelectHotspot }) {
         ? 'https://www.idxcodes.my.id'
         : window.location.origin;
 
-      // 1. Instant Smart Auto-Launch AR URL (loads ar.html in 50ms, auto-launches Apple Quick Look or Scene Viewer)
+      // Instant Smart Auto-Launch AR URL (loads ar.html in 50ms, auto-launches Apple Quick Look or Scene Viewer)
       const smartLaunchUrl = `${canonicalOrigin}/ar.html?id=${product.id}`;
       QRCode.toDataURL(smartLaunchUrl, {
         width: 280,
@@ -74,16 +72,6 @@ export default function ModelViewer({ product, onSelectHotspot }) {
       })
         .then((url) => setQrSmartDataUrl(url))
         .catch((err) => console.error('Error generating smart QR code:', err));
-
-      // 2. Direct USDZ File URL (Camera App iOS native detection)
-      const directUsdzUrl = `${canonicalOrigin}${product.usdzUrl}`;
-      QRCode.toDataURL(directUsdzUrl, {
-        width: 280,
-        margin: 1,
-        color: { dark: '#090d16', light: '#ffffff' }
-      })
-        .then((url) => setQrDirectIosDataUrl(url))
-        .catch((err) => console.error('Error generating direct USDZ QR code:', err));
     }
 
     const viewer = modelViewerRef.current;
@@ -468,70 +456,31 @@ export default function ModelViewer({ product, onSelectHotspot }) {
             )}
 
             {/* Universal QR Code (1 Barcode for both Android and iPhone) */}
-            <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-3.5 sm:p-4 flex flex-col items-center justify-center mb-3">
-              {/* Mode Toggle for PC Scanners */}
-              <div className="flex rounded-lg bg-zinc-200/90 p-0.5 mb-2.5 w-full max-w-xs font-mono text-[10px]">
-                <button
-                  type="button"
-                  onClick={() => setQrMode('smart')}
-                  className={`flex-1 py-1 rounded font-bold transition-all ${
-                    qrMode === 'smart'
-                      ? 'bg-white text-zinc-900 shadow-sm'
-                      : 'text-zinc-600 hover:text-zinc-900'
-                  }`}
-                >
-                  ⚡ Instan AR (Otomatis)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setQrMode('direct-ios')}
-                  className={`flex-1 py-1 rounded font-bold transition-all ${
-                    qrMode === 'direct-ios'
-                      ? 'bg-white text-blue-700 shadow-sm'
-                      : 'text-zinc-600 hover:text-zinc-900'
-                  }`}
-                >
-                  🍏 Direct USDZ (iPhone)
-                </button>
-              </div>
+            <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-4 flex flex-col items-center justify-center mb-3">
+              <span className="text-[10px] font-mono font-bold text-zinc-700 mb-2.5 uppercase text-center flex items-center gap-1.5">
+                <QrCode className="w-3.5 h-3.5 text-blue-600" />
+                <span>1 Barcode Instan AR (Android & iPhone)</span>
+              </span>
 
               {/* QR Image Display */}
-              {qrMode === 'smart' ? (
-                qrSmartDataUrl ? (
-                  <img 
-                    src={qrSmartDataUrl} 
-                    alt={`QR Code Web AR ${product.code}`} 
-                    className="w-48 h-48 rounded-lg bg-white p-2 border border-zinc-300 shadow-sm"
-                  />
-                ) : (
-                  <div className="w-48 h-48 flex items-center justify-center text-xs text-zinc-400">
-                    Membuat Barcode...
-                  </div>
-                )
+              {qrSmartDataUrl ? (
+                <img 
+                  src={qrSmartDataUrl} 
+                  alt={`QR Code Instan AR ${product.code}`} 
+                  className="w-48 h-48 rounded-lg bg-white p-2 border border-zinc-300 shadow-sm"
+                />
               ) : (
-                qrDirectIosDataUrl ? (
-                  <img 
-                    src={qrDirectIosDataUrl} 
-                    alt={`QR Code Direct Apple Quick Look ${product.code}`} 
-                    className="w-48 h-48 rounded-lg bg-white p-2 border border-blue-300 shadow-sm ring-2 ring-blue-500/20"
-                  />
-                ) : (
-                  <div className="w-48 h-48 flex items-center justify-center text-xs text-zinc-400">
-                    Membuat Barcode...
-                  </div>
-                )
+                <div className="w-48 h-48 flex items-center justify-center text-xs text-zinc-400 font-mono">
+                  Membuat Barcode...
+                </div>
               )}
 
-              <div className="mt-2 text-center space-y-0.5">
+              <div className="mt-2.5 text-center space-y-0.5">
                 <span className="text-xs font-bold font-sans text-zinc-900 block">
-                  {qrMode === 'smart'
-                    ? 'Pindai dari PC dengan Kamera HP (Instan AR)'
-                    : 'Pindai dari PC dengan Kamera Bawaan iPhone'}
+                  Pindai dari PC dengan Kamera HP
                 </span>
                 <span className="text-[10px] font-mono text-zinc-500 block">
-                  {qrMode === 'smart'
-                    ? 'Otomatis membuka Apple AR (iPhone) & Google AR (Android)'
-                    : 'Kamera iPhone langsung memunculkan pop-up Apple Quick Look AR'}
+                  Otomatis meluncurkan Apple AR (iPhone) & Google AR (Android)
                 </span>
               </div>
             </div>
